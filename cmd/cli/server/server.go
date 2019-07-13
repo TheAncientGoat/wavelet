@@ -1,3 +1,5 @@
+// Package server half-assedly provides functions and methods for a
+// Wavelet server to interact with the TUI.
 package server
 
 import (
