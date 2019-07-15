@@ -16,7 +16,7 @@ func main() {
 	tview.Initialize()
 	l := logger.NewLogger()
 
-	tview.SetRoot(l)
+	tview.SetRoot(l, true)
 
 	go func() {
 		// Start the main blocking event loop.

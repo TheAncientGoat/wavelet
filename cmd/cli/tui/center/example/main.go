@@ -20,7 +20,7 @@ func main() {
 	c.MaxHeight = 10
 	c.MaxWidth = 40
 
-	tview.SetRoot(c)
+	tview.SetRoot(c, true)
 
 	if err := tview.Run(); err != nil {
 		panic(err)

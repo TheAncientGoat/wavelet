@@ -15,8 +15,9 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 >>>>>>> WIP methods and some changes
 	github.com/diamondburned/tcell v1.1.7
-	github.com/diamondburned/tview/v2 v2.1.0
+	github.com/diamondburned/tview/v2 v2.2.0
 	github.com/fasthttp/websocket v1.4.0
+	github.com/gdamore/tcell v1.1.4
 	github.com/gogo/protobuf v1.2.1
 	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/golang/snappy v0.0.1
@@ -35,8 +36,11 @@ require (
 	github.com/urfave/cli v1.20.0
 	github.com/valyala/fasthttp v1.3.0
 	github.com/valyala/fastjson v1.4.1
-	golang.org/x/crypto v0.0.0-20190611184440-5c40567a22f8
+	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4
+	golang.org/x/net v0.0.0-20190628185345-da137c7871d7 // indirect
+	golang.org/x/sys v0.0.0-20190712062909-fae7ac547cb7 // indirect
 	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4
+	golang.org/x/tools v0.0.0-20190712213246-8b927904ee0d // indirect
 	google.golang.org/grpc v1.21.0
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/urfave/cli.v1 v1.20.0

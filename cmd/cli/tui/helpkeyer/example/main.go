@@ -41,7 +41,7 @@ func main() {
 	f.AddItem(tv, 0, 1, false)
 	f.AddItem(hk, 1, 1, true)
 
-	tview.SetRoot(f)
+	tview.SetRoot(f, true)
 
 	if err := tview.Run(); err != nil {
 		panic(err)

@@ -7,9 +7,12 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/diamondburned/tview/v2"
 	"github.com/perlin-network/wavelet/cmd/cli/server"
+	"github.com/perlin-network/wavelet/cmd/cli/tui/helpkeyer"
 	"github.com/perlin-network/wavelet/cmd/cli/tui/logger"
 	"github.com/perlin-network/wavelet/sys"
 	flag "github.com/spf13/pflag"
+
+	_ "github.com/perlin-network/wavelet/cmd/cli/tui/clearbg"
 )
 
 var log *logger.Logger
@@ -114,7 +117,10 @@ func main() {
 			tview.SetRoot(configUI())
 		} else {*/
 
-	tview.SetRoot(mainUI())
+	ui := mainUI()
+
+	tview.SetRoot(ui, true)
+	tview.SetFocus(ui)
 
 	// }
 
@@ -146,8 +152,21 @@ func mainUI() tview.Primitive {
 
 	go srv.Start()
 
+	// TODO(diamond): Add Tab key to cycle focus
+	// TODO(diamond): Indicative borders?
+
 	flex := tview.NewFlex()
 	flex.AddItem(log, 0, 1, false)
+
+	// TODO(diamond): Dialog API to actually make this easier, or at least
+	// break it down into functions on other files.
+	hk := helpkeyer.New()
+	hk.Set('p', "pay", func() {
+	})
+	hk.Set('f', "find", func() {
+	})
+
+	flex.AddItem(hk, 2, 1, true)
 
 	return flex
 }
