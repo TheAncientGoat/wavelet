@@ -17,6 +17,7 @@ import (
 
 var log *logger.Logger
 var cfg *server.Config
+var srv *server.Server
 
 func main() {
 	/*
@@ -145,10 +146,12 @@ func configUI() tview.Primitive {
 */
 
 func mainUI() tview.Primitive {
-	srv, err := server.New(*cfg, log)
+	s, err := server.New(*cfg, log)
 	if err != nil {
 		fatal("Failed to start server", err)
 	}
+
+	srv = s
 
 	go srv.Start()
 
@@ -160,6 +163,8 @@ func mainUI() tview.Primitive {
 
 	// TODO(diamond): Dialog API to actually make this easier, or at least
 	// break it down into functions on other files.
+	// - [x] API: forms
+	// - [ ] Split callbacks to other functions
 	hk := helpkeyer.New()
 	hk.Set('p', "pay", func() {
 	})

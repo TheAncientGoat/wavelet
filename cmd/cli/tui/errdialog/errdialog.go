@@ -45,7 +45,7 @@ func CallDialog(text string, settings *DialogSettings) {
 		settings = DefaultSettings
 	}
 
-	if settings.ClearBackground {
+	if !settings.ClearBackground {
 		// Turn off clearing the background
 		clearbg.Paused = true
 		defer clearbg.Enable()

@@ -10,7 +10,7 @@ import (
 func init() {
 	tview.Initialize()
 
-	tview.Styles.PrimitiveBackgroundColor = tcell.ColorDefault
+	tview.Styles.PrimitiveBackgroundColor = -1
 	tview.SetBeforeDrawFunc(func(s tcell.Screen) bool {
 		if BeforeDrawFunc(s) {
 			return true
