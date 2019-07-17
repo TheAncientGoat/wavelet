@@ -85,6 +85,19 @@ var (
 
 	FaucetAddress = "0f569c84d434fb0ca682c733176f7c0c2d853fce04d95ae131d2f9b4124d93d8"
 
+	// Contract memory limit: 256KB initial / 2MB max
+	ContractDefaultMemoryPages = 4
+	ContractMaxMemoryPages     = 32
+
+	// Maximum number of table entries (indirect call entries).
+	ContractMaxTableSize = 4096
+
+	// Maximum number of value slots (params+locals+stack values) usable.
+	ContractMaxValueSlots = 8192
+
+	// Maximum number of call frames per-contract.
+	ContractMaxCallStackDepth = 256
+
 	GasTable = map[string]uint64{
 		"nop":                     1,
 		"unreachable":             1,

@@ -57,7 +57,7 @@ type ContractExecutor struct {
 	Payload []byte
 	Error   []byte
 
-	Queue []*Transaction
+	InterContractCall *InterContractCall
 }
 
 func (e *ContractExecutor) GetCost(key string) int64 {
@@ -87,12 +87,14 @@ func (e *ContractExecutor) ResolveFunc(module, field string) exec.FunctionImport
 
 				payload := vm.Memory[payloadPtr : payloadPtr+payloadLen]
 
-				e.Queue = append(e.Queue, &Transaction{
-					Sender:  e.ID,
-					Creator: e.ID,
-					Tag:     sys.Tag(tag),
-					Payload: payload,
-				})
+				e.InterContractCall = &InterContractCall{
+					Tx: Transaction{
+						Sender:  e.ID,
+						Creator: e.ID,
+						Tag:     sys.Tag(tag),
+						Payload: payload,
+					},
+				}
 
 				return 0
 			}
@@ -209,22 +211,27 @@ func (e *ContractExecutor) ResolveGlobal(module, field string) int64 {
 	panic("global variables are disallowed in smart contracts")
 }
 
-func (e *ContractExecutor) Execute(snapshot *avl.Tree, id AccountID, round *Round, tx *Transaction, amount, gasLimit uint64, name string, params, code []byte) error {
+type ContractExecutionSession struct {
+	executor *ContractExecutor
+	vm       *exec.VirtualMachine
+}
+
+func (e *ContractExecutor) GetExecutionSession(snapshot *avl.Tree, id AccountID, round *Round, tx *Transaction, amount, gasLimit uint64, name string, params, code []byte) (*ContractExecutionSession, error) {
 	config := exec.VMConfig{
-		DefaultMemoryPages: 4,
-		MaxMemoryPages:     32,
+		DefaultMemoryPages: sys.ContractDefaultMemoryPages,
+		MaxMemoryPages:     sys.ContractMaxMemoryPages,
 
-		DefaultTableSize: PageSize,
-		MaxTableSize:     PageSize,
+		DefaultTableSize: sys.ContractMaxTableSize,
+		MaxTableSize:     sys.ContractMaxTableSize,
 
-		MaxValueSlots:     4096,
-		MaxCallStackDepth: 256,
+		MaxValueSlots:     sys.ContractMaxValueSlots,
+		MaxCallStackDepth: sys.ContractMaxCallStackDepth,
 		GasLimit:          gasLimit,
 	}
 
 	vm, err := exec.NewVirtualMachine(code, config, e, e)
 	if err != nil {
-		return errors.Wrap(err, "could not init vm")
+		return nil, errors.Wrap(err, "could not init vm")
 	}
 
 	if mem := LoadContractMemorySnapshot(snapshot, id); mem != nil {
@@ -238,33 +245,55 @@ func (e *ContractExecutor) Execute(snapshot *avl.Tree, id AccountID, round *Roun
 
 	entry, exists := vm.GetFunctionExport("_contract_" + name)
 	if !exists {
-		return errors.Wrapf(ErrContractFunctionNotFound, `fn "_contract_%s" does not exist`, name)
+		return nil, errors.Wrapf(ErrContractFunctionNotFound, `fn "_contract_%s" does not exist`, name)
 	}
 
 	vm.Ignite(entry)
 
+	return &ContractExecutionSession{
+		executor: e,
+		vm:       vm,
+	}, nil
+}
+
+type InterContractCall struct {
+	Tx Transaction
+}
+
+func (s *ContractExecutionSession) Execute() (*InterContractCall, error) {
+	vm := s.vm
 	for !vm.Exited {
 		vm.Execute()
 
 		if vm.Delegate != nil {
 			vm.Delegate()
 			vm.Delegate = nil
+
+			if s.executor.InterContractCall != nil {
+				callInfo := s.executor.InterContractCall
+				s.executor.InterContractCall = nil
+				return callInfo, nil
+			}
 		}
 	}
 
-	if vm.ExitError == nil && len(e.Error) == 0 {
-		SaveContractMemorySnapshot(snapshot, id, vm.Memory)
+	if vm.ExitError == nil && len(s.executor.Error) == 0 {
+		SaveContractMemorySnapshot(s.executor.Snapshot, s.executor.ID, vm.Memory)
 	}
 
 	if vm.ExitError != nil && utils.UnifyError(vm.ExitError).Error() == "gas limit exceeded" {
-		e.Gas = gasLimit
-		e.GasLimitExceeded = true
+		s.executor.Gas = vm.Config.GasLimit
+		s.executor.GasLimitExceeded = true
 	} else {
-		e.Gas = vm.Gas
-		e.GasLimitExceeded = false
+		s.executor.Gas = vm.Gas
+		s.executor.GasLimitExceeded = false
 	}
 
-	return nil
+	if vm.ExitError != nil {
+		return nil, utils.UnifyError(vm.ExitError)
+	} else {
+		return nil, nil
+	}
 }
 
 func LoadContractMemorySnapshot(snapshot *avl.Tree, id AccountID) []byte {
