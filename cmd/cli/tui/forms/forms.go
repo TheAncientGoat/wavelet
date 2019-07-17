@@ -63,7 +63,14 @@ func (f *Form) Add(pairs ...Pair) {
 	f.pairs = append(f.pairs, pairs...)
 
 	for _, pair := range pairs {
-		f.AddInputField(pair.Name, "", f.FieldWidth, pair.Validator, nil)
+		field := f.AddInputField(
+			pair.Name, "", f.FieldWidth,
+			pair.Validator, nil,
+		)
+
+		if pair.Completer != nil {
+			field.SetAutocompleteFunc(pair.Completer)
+		}
 	}
 }
 

@@ -45,6 +45,10 @@ func (s *Server) Status() {
 		peerIDs = append(peerIDs, id.String())
 	}
 
+	// Add the root ID and self ID to the history
+	s.History.add(hex.EncodeToString(round.End.ID[:]), HistoryEntryRoot)
+	s.History.add(hex.EncodeToString(publicKey[:]), HistoryEntrySelf)
+
 	s.logger.Level(logger.WithInfo("Node status:").
 		F("difficulty", "%v", round.ExpectedDifficulty(
 			sys.MinDifficulty, sys.DifficultyScaleFactor)).
@@ -198,6 +202,8 @@ func (s *Server) Find(addr string) error {
 			F("is_contract", "%v", isContract).
 			F("num_pages", "%d", numPages))
 
+		s.History.add(addr, HistoryEntryAccount)
+
 		// Exit, not a transaction
 		return nil
 	}
@@ -209,7 +215,7 @@ func (s *Server) Find(addr string) error {
 	tx := s.Ledger.Graph().FindTransaction(txID)
 
 	if tx != nil {
-		var parents []string
+		var parents = make([]string, 0, len(tx.ParentIDs))
 		for _, parentID := range tx.ParentIDs {
 			parents = append(parents, hex.EncodeToString(parentID[:]))
 		}
@@ -223,6 +229,8 @@ func (s *Server) Find(addr string) error {
 			F("depth", "%d", tx.Depth).
 			F("seed", "%x", tx.Seed[:]).
 			F("seed_zero_prefix_len", "%d", tx.SeedLen))
+
+		s.History.add(addr, HistoryEntryTransaction)
 
 		return nil
 	}
@@ -356,6 +364,9 @@ func (s *Server) sendTx(tx wavelet.Transaction) (*wavelet.Transaction, error) {
 			return nil, e
 		}
 	}
+
+	// Add the ID into history
+	s.History.add(hex.EncodeToString(tx.ID[:]), HistoryEntryTransaction)
 
 	return &tx, nil
 }

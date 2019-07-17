@@ -165,11 +165,12 @@ func mainUI() tview.Primitive {
 	// break it down into functions on other files.
 	// - [x] API: forms
 	// - [ ] Split callbacks to other functions
+	// - [x] Autocompletion for IDs
+	// - [ ] File browser
 	hk := helpkeyer.New()
-	hk.Set('p', "pay", func() {
-	})
-	hk.Set('f', "find", func() {
-	})
+	hk.Set('s', "status", keyStatus)
+	hk.Set('p', "pay", keyPay)
+	hk.Set('f', "find", keyFind)
 
 	flex.AddItem(hk, 2, 1, true)
 

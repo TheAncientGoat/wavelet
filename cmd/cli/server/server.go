@@ -50,6 +50,8 @@ type Server struct {
 	Client *skademlia.Client
 	Ledger *wavelet.Ledger
 	Keys   *skademlia.Keypair
+
+	History HistoryStore
 }
 
 // New creates a new server. `log' is needed.
@@ -130,14 +132,20 @@ func New(cfg Config, log *logger.Logger) (*Server, error) {
 	))
 
 	s.Client.OnPeerJoin(func(conn *grpc.ClientConn, id *skademlia.ID) {
+		pub := fmt.Sprintf("%x", id.PublicKey())
+		s.History.add(pub, HistoryEntryAccount)
+
 		s.logger.Level(logger.WithInfo("Peer joined").
-			F("public_key", "%x", id.PublicKey()).
+			F("public_key", "%s", pub).
 			F("address", id.Address()))
 	})
 
 	s.Client.OnPeerLeave(func(conn *grpc.ClientConn, id *skademlia.ID) {
+		pub := fmt.Sprintf("%x", id.PublicKey())
+		s.History.add(pub, HistoryEntryAccount)
+
 		s.logger.Level(logger.WithInfo("Peer left").
-			F("public_key", "%x", id.PublicKey()).
+			F("public_key", "%s", pub).
 			F("address", id.Address()))
 	})
 

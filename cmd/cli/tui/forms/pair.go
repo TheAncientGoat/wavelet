@@ -1,5 +1,7 @@
 package forms
 
+import "strconv"
+
 // Setter is the function called when the user submits the form. This function
 // should set the fields of the structs, doing type conversion if needed.
 //
@@ -15,17 +17,31 @@ type Pair struct {
 
 	// If false, invalid
 	Validator Validator
+
+	Completer Completer
 }
 
 // NewPair creates a new Pair
 func NewPair(name string, value Setter) Pair {
-	return Pair{name, value, nil}
+	return Pair{name, value, nil, nil}
 }
 
-// NewFromStringPtr creates a new Pair from a string pointer.
-func NewFromStringPtr(name string, value *string) Pair {
+// StringPair creates a new Pair from a string pointer.
+func StringPair(name string, value *string) Pair {
 	return Pair{name, func(output string) error {
 		*value = output
 		return nil
-	}, nil}
+	}, nil, nil}
+}
+
+func IntPair(name string, value *int) Pair {
+	return Pair{name, func(output string) error {
+		i, err := strconv.Atoi(output)
+		if err != nil {
+			return err
+		}
+
+		*value = i
+		return nil
+	}, nil, nil}
 }
