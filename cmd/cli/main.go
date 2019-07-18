@@ -159,18 +159,26 @@ func mainUI() tview.Primitive {
 	// TODO(diamond): Indicative borders?
 
 	flex := tview.NewFlex()
+
+	// Add the logger
 	flex.AddItem(log, 0, 1, false)
 
 	// TODO(diamond): Dialog API to actually make this easier, or at least
 	// break it down into functions on other files.
 	// - [x] API: forms
-	// - [ ] Split callbacks to other functions
+	// - [x] Split callbacks to other functions
 	// - [x] Autocompletion for IDs
-	// - [ ] File browser
+	// - [x] File browser
 	hk := helpkeyer.New()
+	hk.Blocking = false
+
 	hk.Set('s', "status", keyStatus)
 	hk.Set('p', "pay", keyPay)
 	hk.Set('f', "find", keyFind)
+	hk.Set('n', "spawn", keySpawn)
+	hk.Set('a', "place stake", keyPlaceStake)
+	hk.Set('w', "withdraw stake", keyWithdrawStake)
+	hk.Set('r', "withdraw reward", keyWithdrawReward)
 
 	flex.AddItem(hk, 2, 1, true)
 

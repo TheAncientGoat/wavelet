@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/perlin-network/wavelet"
 	"github.com/perlin-network/wavelet/cmd/cli/tui/errdialog"
+	"github.com/perlin-network/wavelet/cmd/cli/tui/filechooser"
 	"github.com/perlin-network/wavelet/cmd/cli/tui/forms"
 )
 
@@ -57,6 +58,58 @@ func keyFind() {
 	}
 
 	if err := srv.Find(address); err != nil {
+		errdialog.CallDialog(err.Error(), nil)
+	}
+}
+
+func keySpawn() {
+	path := filechooser.Spawn()
+	if err := srv.Spawn(path); err != nil {
+		errdialog.CallDialog(err.Error(), nil)
+	}
+}
+
+func keyPlaceStake() {
+	var amount int
+
+	form := forms.New()
+	form.Add(forms.IntPair("Amount", &amount))
+
+	if !form.Spawn() {
+		return
+	}
+
+	if err := srv.PlaceStake(amount); err != nil {
+		errdialog.CallDialog(err.Error(), nil)
+	}
+}
+
+func keyWithdrawStake() {
+	var amount int
+
+	form := forms.New()
+	form.Add(forms.IntPair("Amount", &amount))
+
+	if !form.Spawn() {
+		return
+	}
+
+	if err := srv.WithdrawStake(amount); err != nil {
+		errdialog.CallDialog(err.Error(), nil)
+	}
+}
+
+func keyWithdrawReward() {
+	var amount int
+
+	form := forms.New()
+	form.Add(forms.IntPair("Amount", &amount))
+
+	if !form.Spawn() {
+		return
+	}
+
+	if err := srv.WithdrawReward(amount); err != nil {
 		errdialog.CallDialog(err.Error(), nil)
 	}
 }

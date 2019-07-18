@@ -14,6 +14,9 @@ type HelpKeyer struct {
 	*tview.TextView
 	mu sync.Mutex
 
+	// If false, run callbacks in goroutines
+	Blocking bool
+
 	Binds []*Bind
 }
 
@@ -34,7 +37,12 @@ func New() *HelpKeyer {
 	h.TextView.SetInputCapture(func(ev *tcell.EventKey) *tcell.EventKey {
 		for _, b := range h.Binds {
 			if b.Bind == ev.Rune() {
-				b.Callback()
+				if h.Blocking {
+					b.Callback()
+				} else {
+					go b.Callback()
+				}
+
 				break
 			}
 		}

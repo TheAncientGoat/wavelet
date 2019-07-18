@@ -279,7 +279,7 @@ func (s *Server) Spawn(pathToContract string) error {
 }
 
 // PlaceStake places a stake
-func (s *Server) PlaceStake(amount int) {
+func (s *Server) PlaceStake(amount int) error {
 	var intBuf [8]byte
 	var payload bytes.Buffer
 
@@ -294,15 +294,17 @@ func (s *Server) PlaceStake(amount int) {
 	))
 
 	if err != nil {
-		return
+		return err
 	}
 
 	s.logger.Level(logger.WithSuccess("Stake placed").
 		F("id", "%x", tx.ID))
+
+	return nil
 }
 
 // WithdrawStake withdraws the stake
-func (s *Server) WithdrawStake(amount int) {
+func (s *Server) WithdrawStake(amount int) error {
 	var intBuf [8]byte
 	var payload bytes.Buffer
 
@@ -317,15 +319,17 @@ func (s *Server) WithdrawStake(amount int) {
 	))
 
 	if err != nil {
-		return
+		return err
 	}
 
 	s.logger.Level(logger.WithSuccess("Stake withdrew").
 		F("id", "%x", tx.ID))
+
+	return nil
 }
 
 // WithdrawReward withdraws the reward
-func (s *Server) WithdrawReward(amount int) {
+func (s *Server) WithdrawReward(amount int) error {
 	var intBuf [8]byte
 	var payload bytes.Buffer
 
@@ -340,11 +344,13 @@ func (s *Server) WithdrawReward(amount int) {
 	))
 
 	if err != nil {
-		return
+		return err
 	}
 
 	s.logger.Level(logger.WithSuccess("Reward withdrew").
 		F("id", "%x", tx.ID))
+
+	return nil
 }
 
 func (s *Server) sendTx(tx wavelet.Transaction) (*wavelet.Transaction, error) {
