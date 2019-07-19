@@ -43,5 +43,3 @@ require (
 	gopkg.in/urfave/cli.v1 v1.20.0
 	gopkg.in/yaml.v2 v2.2.2 // indirect
 )
-
-replace github.com/diamondburned/tview/v2 => ../../tview

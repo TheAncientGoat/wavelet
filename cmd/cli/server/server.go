@@ -150,14 +150,21 @@ func New(cfg Config, log *logger.Logger) (*Server, error) {
 	})
 
 	// Initialize the key-value store
-	kv, err := store.NewLevelDB(s.cfg.Database)
-	if err != nil {
-		s.logger.Level(logger.WithError(err).
-			Wrap("Failed to create/open database").
-			F("location", s.cfg.Database))
-	}
+	if cfg.Database != "" {
+		kv, err := store.NewLevelDB(s.cfg.Database)
+		if err != nil {
+			// s.logger.Level(logger.WithError(err).
+			// Wrap("Failed to create/open database").
+			// F("location", s.cfg.Database))
 
-	s.db = kv
+			return nil, err
+		}
+
+		s.db = kv
+	} else {
+		// Make one in memory instead
+		s.db = store.NewInmem()
+	}
 
 	// Create a new ledger
 	s.Ledger = wavelet.NewLedger(s.db, s.Client)

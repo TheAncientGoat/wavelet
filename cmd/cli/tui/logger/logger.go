@@ -24,6 +24,7 @@ func NewLogger() *Logger {
 	l.list.SetSecondaryTextColor(tcell.ColorDefault)
 	l.list.SetSelectedFunc(l.callLevel)
 	l.list.SetHighlightFullLine(true)
+	l.list.SetSelectedTextColor(tcell.ColorBlack)
 
 	l.tv = tview.NewTextView()
 	l.tv.SetDynamicColors(true)
@@ -116,6 +117,7 @@ func (l *Logger) Level(lvl Level) *Logger {
 	m, s := lvl.Short()
 	l.list.AddItem(m, "          "+s, 0, nil)
 
+	// Get the information to estimate scroll
 	i, _ := l.list.GetCurrentItem()
 	c := l.list.GetItemCount()
 
@@ -126,9 +128,7 @@ func (l *Logger) Level(lvl Level) *Logger {
 	}
 
 	// Draw the application
-	tview.ExecApplication(func(app *tview.Application) bool {
-		return true
-	})
+	tview.Draw()
 
 	return l
 }

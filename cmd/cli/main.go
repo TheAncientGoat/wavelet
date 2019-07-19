@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/davecgh/go-spew/spew"
+	"github.com/diamondburned/tcell"
 	"github.com/diamondburned/tview/v2"
 	"github.com/perlin-network/wavelet/cmd/cli/server"
 	"github.com/perlin-network/wavelet/cmd/cli/tui/helpkeyer"
@@ -105,9 +105,6 @@ func main() {
 	// Set the oddballs
 	sys.MinDifficulty = byte(*difficulty)
 
-	spew.Dump(cfg)
-	os.Exit(0)
-
 	// Make a new global logger
 	log = logger.NewLogger()
 
@@ -159,6 +156,7 @@ func mainUI() tview.Primitive {
 	// TODO(diamond): Indicative borders?
 
 	flex := tview.NewFlex()
+	flex.SetDirection(tview.FlexRow)
 
 	// Add the logger
 	flex.AddItem(log, 0, 1, false)
@@ -171,6 +169,15 @@ func mainUI() tview.Primitive {
 	// - [x] File browser
 	hk := helpkeyer.New()
 	hk.Blocking = false
+	hk.SetInputCapture(func(ev *tcell.EventKey) *tcell.EventKey {
+		switch ev.Key() {
+		case tcell.KeyUp, tcell.KeyDown, tcell.KeyEnter, tcell.KeyEsc:
+			log.InputHandler()(ev, nil) // hopefully the nil doesn't crash lol
+			return nil
+		}
+
+		return ev
+	})
 
 	hk.Set('s', "status", keyStatus)
 	hk.Set('p', "pay", keyPay)
