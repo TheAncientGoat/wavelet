@@ -15,6 +15,8 @@ type Pair struct {
 	// if error is not nil, pop up an error dialog and reprompt
 	Value Setter
 
+	Default string
+
 	// If false, invalid
 	Validator Validator
 
@@ -23,7 +25,7 @@ type Pair struct {
 
 // NewPair creates a new Pair
 func NewPair(name string, value Setter) Pair {
-	return Pair{name, value, nil, nil}
+	return Pair{name, value, "", nil, nil}
 }
 
 // StringPair creates a new Pair from a string pointer.
@@ -31,9 +33,10 @@ func StringPair(name string, value *string) Pair {
 	return Pair{name, func(output string) error {
 		*value = output
 		return nil
-	}, nil, nil}
+	}, "", nil, nil}
 }
 
+// IntPair creates a new Pair from an int pointer.
 func IntPair(name string, value *int) Pair {
 	return Pair{name, func(output string) error {
 		i, err := strconv.Atoi(output)
@@ -43,5 +46,5 @@ func IntPair(name string, value *int) Pair {
 
 		*value = i
 		return nil
-	}, nil, nil}
+	}, "0", nil, nil}
 }

@@ -12,6 +12,9 @@ import (
 var (
 	// ErrNotStruct is returned if the interface given is not a struct
 	ErrNotStruct = errors.New("interface given is not a struct")
+
+	DefaultWidth  = 80
+	DefaultHeight = 100
 )
 
 type Form struct {
@@ -20,10 +23,10 @@ type Form struct {
 	// default: 50
 	FieldWidth int
 
-	// default: 80
+	// default: DefaultWidth
 	Width int
 
-	// default: 100
+	// default: DefaultHeight
 	Height int
 
 	pairs []Pair
@@ -52,8 +55,8 @@ func New() *Form {
 	return &Form{
 		Form:       form,
 		FieldWidth: 50,
-		Width:      80,
-		Height:     100,
+		Width:      DefaultWidth,
+		Height:     DefaultHeight,
 		submitted:  submitted,
 	}
 }
@@ -64,12 +67,20 @@ func (f *Form) Add(pairs ...Pair) {
 
 	for _, pair := range pairs {
 		field := f.AddInputField(
-			pair.Name, "", f.FieldWidth,
+			pair.Name, pair.Default, f.FieldWidth,
 			pair.Validator, nil,
 		)
 
+		field.SetFieldWidth(f.Width)
+
 		if pair.Completer != nil {
 			field.SetAutocompleteFunc(pair.Completer)
+
+			ac := field.Autocomplete()
+			ac.SetBackgroundColor(tcell.ColorWhite)
+			ac.SetSelectedBackgroundColor(tcell.ColorGrey)
+			ac.SetMainTextColor(tcell.ColorGrey)
+			ac.SetSelectedTextColor(tcell.ColorWhite)
 		}
 	}
 }

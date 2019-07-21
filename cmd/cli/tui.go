@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"strings"
 
@@ -26,8 +27,13 @@ func getRecipientFormPair(recipient [wavelet.SizeAccountID]byte) forms.Pair {
 	return forms.Pair{
 		Name: "Recipient",
 		Value: func(output string) error {
-			if len(output) == wavelet.SizeAccountID {
-				copy(recipient[:], []byte(output))
+			if len(output) == 64 {
+				buf, err := hex.DecodeString(output)
+				if err != nil {
+					return err
+				}
+
+				copy(recipient[:], buf)
 				return nil
 			}
 

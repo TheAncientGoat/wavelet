@@ -7,6 +7,7 @@ import (
 	"github.com/diamondburned/tcell"
 	"github.com/diamondburned/tview/v2"
 	"github.com/perlin-network/wavelet/cmd/cli/server"
+	"github.com/perlin-network/wavelet/cmd/cli/tui/forms"
 	"github.com/perlin-network/wavelet/cmd/cli/tui/helpkeyer"
 	"github.com/perlin-network/wavelet/cmd/cli/tui/logger"
 	"github.com/perlin-network/wavelet/sys"
@@ -152,6 +153,8 @@ func mainUI() tview.Primitive {
 	srv = s
 
 	go srv.Start()
+
+	forms.DefaultWidth = 120
 
 	// TODO(diamond): Add Tab key to cycle focus
 	// TODO(diamond): Indicative borders?
