@@ -30,6 +30,7 @@ github.com/diamondburned/tview v1.2.2-0.20190706004047-473788cb5700 h1:zQTUAAhmn
 github.com/diamondburned/tview v1.2.2-0.20190706004047-473788cb5700/go.mod h1:k1JPclsaKGzV2ypfjgS/QEqhq0ImKQTSEA9drkYXntY=
 github.com/diamondburned/tview/v2 v2.0.0 h1:8SxTYSEoR22QsxSew6xxIPcbCeZ3aWbv4L2EmSlLhgA=
 github.com/diamondburned/tview/v2 v2.0.0/go.mod h1:C7Ogs4FBhaCpdR7eUOH1is7WRK/KmGWBkfrQMdf1z3o=
+github.com/diamondburned/tview/v2 v2.2.2 h1:SmndcZMTQ9w3jdvpVYmhOtXKaw5Ec2KDDVFViylWJm0=
 github.com/diamondburned/tview/v2 v2.2.2/go.mod h1:A9ec7wu+piGvkxnRNye5dV6ysoyRhhxk5q/GwH5KTCw=
 github.com/fasthttp/websocket v1.4.0 h1:hWw+gsVLA82cQFDF/vzydHjOedj1Oo00T/uKk+J5kcs=
 github.com/fasthttp/websocket v1.4.0/go.mod h1:4nypHRMj3oQPKA3/LllCXx0F0L5VyVKlMgo3lgbbwBM=

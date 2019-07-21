@@ -195,11 +195,14 @@ func (s *Server) Start() {
 
 	if peers := s.Client.Bootstrap(); len(peers) > 0 {
 		lvl := logger.WithSuccess(fmt.Sprintf(
-			"Bootstrapped with %d peers", len(peers),
+			"Bootstrapped with %d peer(s)", len(peers),
 		))
 
 		for i, peer := range peers {
-			lvl.F(strconv.Itoa(i), peer.String())
+			_i := strconv.Itoa(i)
+
+			lvl.F(_i+"_address", peer.Address())
+			lvl.F(_i+"_pubkey", "%x", peer.PublicKey())
 		}
 
 		s.logger.Level(lvl)

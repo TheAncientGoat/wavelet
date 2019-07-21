@@ -103,7 +103,7 @@ var _ Level = (*Info)(nil)
 
 func WithInfo(info string) *Info {
 	return &Info{
-		generic: newGeneric("cyan"),
+		generic: newGeneric("teal"),
 		info:    info,
 	}
 }

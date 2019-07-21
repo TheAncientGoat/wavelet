@@ -18,6 +18,8 @@ type HelpKeyer struct {
 	Blocking bool
 
 	Binds []*Bind
+
+	inputCapture func(ev *tcell.EventKey) *tcell.EventKey
 }
 
 type Bind struct {
@@ -45,6 +47,10 @@ func New() *HelpKeyer {
 
 				break
 			}
+		}
+
+		if h.inputCapture != nil {
+			return h.inputCapture(ev)
 		}
 
 		return nil
@@ -91,4 +97,10 @@ func (h *HelpKeyer) Set(bind rune, desc string, f func()) {
 	}
 
 	h.SetText(s.String())
+}
+
+// SetInputCapture sets the function to execute if the rune binds cannot be
+// found.
+func (h *HelpKeyer) SetInputCapture(f func(*tcell.EventKey) *tcell.EventKey) {
+	h.inputCapture = f
 }

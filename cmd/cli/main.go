@@ -104,6 +104,7 @@ func main() {
 
 	// Set the oddballs
 	sys.MinDifficulty = byte(*difficulty)
+	cfg.Peers = flag.Args()
 
 	// Make a new global logger
 	log = logger.NewLogger()
@@ -170,12 +171,7 @@ func mainUI() tview.Primitive {
 	hk := helpkeyer.New()
 	hk.Blocking = false
 	hk.SetInputCapture(func(ev *tcell.EventKey) *tcell.EventKey {
-		switch ev.Key() {
-		case tcell.KeyUp, tcell.KeyDown, tcell.KeyEnter, tcell.KeyEsc:
-			log.InputHandler()(ev, nil) // hopefully the nil doesn't crash lol
-			return nil
-		}
-
+		log.InputHandler()(ev, nil)
 		return ev
 	})
 
