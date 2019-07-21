@@ -25,6 +25,11 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"math/rand"
+	"strings"
+	"sync"
+	"time"
+
 	"github.com/perlin-network/noise"
 	"github.com/perlin-network/noise/skademlia"
 	"github.com/perlin-network/wavelet/avl"
@@ -36,10 +41,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/peer"
-	"math/rand"
-	"strings"
-	"sync"
-	"time"
 )
 
 type Ledger struct {

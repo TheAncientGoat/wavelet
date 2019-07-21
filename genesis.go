@@ -21,6 +21,7 @@ package wavelet
 
 import (
 	"encoding/hex"
+
 	"github.com/perlin-network/wavelet/avl"
 	"github.com/perlin-network/wavelet/log"
 	"github.com/pkg/errors"
@@ -49,7 +50,7 @@ func performInception(tree *avl.Tree, genesis *string) Round {
 
 	var buf []byte
 
-	if genesis != nil {
+	if genesis != nil && len(*genesis) != 0 {
 		buf = []byte(*genesis)
 	} else {
 		buf = []byte(defaultGenesis)

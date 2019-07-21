@@ -20,6 +20,8 @@ var log *logger.Logger
 var cfg *server.Config
 var srv *server.Server
 
+var debug bool
+
 func main() {
 	/*
 		// Add the config file flag
@@ -33,6 +35,9 @@ func main() {
 	var promptConfigDialog bool
 	flag.BoolVarP(&promptConfigDialog, "prompt-config", "p", true,
 		"Start the TUI with a dialog to change parameters.")
+
+	// Debug bool
+	flag.BoolVar(&debug, "debug", false, "Dump stack trace on error")
 
 	// Add the server config flags
 	cfg = &server.Config{}
@@ -127,7 +132,7 @@ func main() {
 	// TODO(diamond): actual TUI code lmao
 
 	if err := tview.Run(); err != nil {
-		fatal(err)
+		fatal("Failed to run tview:", err)
 	}
 }
 
