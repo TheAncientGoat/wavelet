@@ -1,11 +1,14 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/diamondburned/tcell"
 	"github.com/diamondburned/tview/v2"
+	"github.com/perlin-network/wavelet"
 	"github.com/perlin-network/wavelet/cmd/cli/server"
 	"github.com/perlin-network/wavelet/cmd/cli/tui/forms"
 	"github.com/perlin-network/wavelet/cmd/cli/tui/helpkeyer"
@@ -115,7 +118,10 @@ func main() {
 	// Make a new global logger
 	log = logger.NewLogger()
 
-	tview.Initialize()
+	tview.Initialize().MouseSupport = false
+	tview.Styles.PrimaryTextColor = -1
+	tview.Styles.SecondaryTextColor = -1
+	tview.Styles.TitleColor = -1
 
 	/*
 		if promptConfigDialog {
@@ -169,6 +175,31 @@ func mainUI() tview.Primitive {
 
 	// Add the logger
 	flex.AddItem(log, 0, 1, false)
+
+	// Make a statusbar
+	stat := tview.NewTextView()
+	stat.SetBackgroundColor(tcell.ColorGreen)
+	stat.SetTextColor(tcell.ColorWhite)
+	// Doesn't seem very bright, but this is updating the status bar 15
+	// times every second
+	go func() {
+		pub := s.Keys.PublicKey()
+		key := hex.EncodeToString(pub[:])
+
+		// 15 redraws/sec == 15fps minimum
+		for range time.NewTicker(time.Second / 15).C {
+			snap := s.Ledger.Snapshot()
+			bal, _ := wavelet.ReadAccountBalance(snap, pub)
+
+			stat.SetText(fmt.Sprintf(
+				"⣿ wavelet: %s - %d PERLs", key[:8], bal,
+			))
+
+			tview.Draw()
+		}
+	}()
+
+	flex.AddItem(stat, 1, 1, false)
 
 	// TODO(diamond): Dialog API to actually make this easier, or at least
 	// break it down into functions on other files.

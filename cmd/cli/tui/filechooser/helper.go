@@ -19,6 +19,10 @@ func Spawn() string {
 		selected <- filename
 	}
 
+	c.SetDoneFunc(func() {
+		selected <- ""
+	})
+
 	if err := c.ChangeDirectory(""); err != nil {
 		go errdialog.CallDialog(err.Error(), nil)
 		return ""
@@ -26,6 +30,8 @@ func Spawn() string {
 
 	tview.SetRoot(c, true)
 	tview.SetFocus(c)
+
+	tview.Draw()
 
 	return <-selected
 }

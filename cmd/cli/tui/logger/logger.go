@@ -21,13 +21,15 @@ func NewLogger() *Logger {
 	l := &Logger{}
 
 	l.list = tview.NewList()
-	l.list.SetSecondaryTextColor(tcell.ColorDefault)
+	l.list.SetMainTextColor(-1)
+	l.list.SetSecondaryTextColor(-1)
 	l.list.SetSelectedFunc(l.callLevel)
 	l.list.SetHighlightFullLine(true)
 	l.list.SetSelectedTextColor(tcell.ColorBlack)
 
 	l.tv = tview.NewTextView()
 	l.tv.SetDynamicColors(true)
+	l.tv.SetTextColor(-1)
 	l.tv.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		var key = event.Key()
 		var char = event.Name()

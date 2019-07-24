@@ -12,7 +12,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dghubble/trie v0.0.0-20190512033633-6d8e3fa705df
 	github.com/diamondburned/tcell v1.1.8
-	github.com/diamondburned/tview/v2 v2.2.3
+	github.com/diamondburned/tview/v2 v2.2.4
 	github.com/fasthttp/websocket v1.4.0
 	github.com/gogo/protobuf v1.2.1
 	github.com/golang/protobuf v1.3.1 // indirect

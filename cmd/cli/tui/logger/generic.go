@@ -32,7 +32,7 @@ func (g *generic) wrapShort(content string) string {
 }
 
 func (g *generic) shortkeys() string {
-	return g.keys("", ", ")
+	return g.keys("", ", ", 8)
 }
 
 func (g *generic) wrapFull(content string) string {
@@ -40,14 +40,21 @@ func (g *generic) wrapFull(content string) string {
 }
 
 func (g *generic) fullkeys() string {
-	return g.keys("\t", "\n")
+	return g.keys("\t", "\n", 0)
 }
 
-func (g *generic) keys(pre, suf string) string {
+func (g *generic) keys(pre, suf string, trim int) string {
 	var b strings.Builder
+
 	for _, s := range g.with.get() {
+		var val = s[1]
+
+		if trim > 0 && len(s[1]) > trim {
+			val = val[:trim] + "…"
+		}
+
 		b.WriteString(
-			"[-]" + pre + s[0] + " = " + s[1] + "[-]" + suf,
+			"[-]" + pre + s[0] + " = " + val + "[-]" + suf,
 		)
 	}
 

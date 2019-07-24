@@ -64,6 +64,10 @@ func keyFind() {
 
 func keySpawn() {
 	path := filechooser.Spawn()
+	if path == "" {
+		return
+	}
+
 	if err := srv.Spawn(path); err != nil {
 		errdialog.CallDialog(err.Error(), nil)
 	}

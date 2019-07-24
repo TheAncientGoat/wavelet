@@ -77,10 +77,12 @@ func (f *Form) Add(pairs ...Pair) {
 			field.SetAutocompleteFunc(pair.Completer)
 
 			ac := field.Autocomplete()
-			ac.SetBackgroundColor(tcell.ColorWhite)
-			ac.SetSelectedBackgroundColor(tcell.ColorGrey)
-			ac.SetMainTextColor(tcell.ColorGrey)
-			ac.SetSelectedTextColor(tcell.ColorWhite)
+			if ac != nil {
+				ac.SetBackgroundColor(tcell.ColorWhite)
+				ac.SetSelectedBackgroundColor(tcell.ColorGrey)
+				ac.SetMainTextColor(tcell.ColorGrey)
+				ac.SetSelectedTextColor(tcell.ColorWhite)
+			}
 		}
 	}
 }
