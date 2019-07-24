@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net"
 	"strconv"
-	"sync"
 	"testing"
 	"time"
 
@@ -53,11 +52,6 @@ func (n *TestNetwork) AddNode(t testing.TB, startingBalance uint64) *TestLedger 
 	return node
 }
 
-func (n *TestNetwork) WaitForConsensus(t testing.TB) {
-	all := append(n.nodes, n.faucet)
-	TestWaitForConsensus(t, time.Second*30, all)
-}
-
 type TestLedger struct {
 	ledger    *Ledger
 	server    *grpc.Server
@@ -97,6 +91,7 @@ func NewTestLedger(t testing.TB, cfg TestLedgerConfig) *TestLedger {
 
 	kv, cleanup := store.NewTestKV(t, "inmem", "db")
 	ledger := NewLedger(kv, client, WithoutGC())
+
 	server := client.Listen()
 	RegisterWaveletServer(server, ledger.Protocol())
 
@@ -278,32 +273,6 @@ func (l *TestLedger) FindTransaction(t testing.TB, id TransactionID) *Transactio
 
 func (l *TestLedger) Applied(tx Transaction) bool {
 	return tx.Depth <= l.ledger.Graph().RootDepth()
-}
-
-func TestWaitForConsensus(t testing.TB, timeout time.Duration, ledgers []*TestLedger) {
-	var wg sync.WaitGroup
-	for _, l := range ledgers {
-		wg.Add(1)
-		go func(ledger *TestLedger) {
-			defer wg.Done()
-			ledger.WaitForConsensus()
-		}(l)
-	}
-
-	done := make(chan struct{})
-	go func() {
-		wg.Wait()
-		close(done)
-	}()
-
-	timer := time.NewTimer(timeout)
-	select {
-	case <-done:
-		return
-
-	case <-timer.C:
-		t.Fatal("consensus round took too long")
-	}
 }
 
 // loadKeys returns a keypair from a wallet string, or generates a new one
