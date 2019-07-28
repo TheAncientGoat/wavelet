@@ -25,10 +25,15 @@ func main() {
 
 	i := inputcomplete.New()
 	i.Completer = func(word string) []inputcomplete.Completion {
+		// Make a slice of Completion entries
 		cs := make([]inputcomplete.Completion, 0, len(dict))
+
 		for i, d := range dict {
+			// If the things in the dictionary starts with the input word
 			if strings.HasPrefix(d, word) {
+				// Add
 				cs = append(cs, inputcomplete.Completion{
+					// Color markup is supported
 					Visual:  fmt.Sprintf("[white]%-7s [%s[][-]", d, eng[i]),
 					Replace: d,
 				})

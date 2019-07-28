@@ -77,6 +77,11 @@ func New() *Input {
 			f := strings.Split(text, " ")
 			text = f[len(f)-1]
 
+			if text == "" {
+				i.setCompletes(nil)
+				return
+			}
+
 			i.completerIndex = len(strings.Join(f[:len(f)-1], " "))
 			if len(f) > 1 {
 				i.completerIndex++
@@ -115,21 +120,28 @@ func (i *Input) Draw(s tcell.Screen) {
 		i.Complete.SetCurrentItem(0)
 	}
 
-	x, y, w, h := i.GetRect()
+	x, y, w, _ := i.GetRect()
 
 	// The positions for the autocompleter
 	var cX, cY = x + i.completerIndex, y + 1
 
 	// Calculate the height for the autocompleter
-	height := min(len(items), min(i.MaxFields, h))
+	height := min(len(items), i.MaxFields)
 	width := w - i.completerIndex
 
-	//panic(fmt.Sprint("bruh", height, len(items) + 1, i.MaxFields, h))
-
 	// If the drop-down completer goes out of screen
-	if cY+height > y+h {
+	if cY+height > y+1 {
 		// Just drop up lol
 		cY = y - height
+		if cY < 0 {
+			// Say hypothetically, we start outside the screen. This causes
+			// negative. cY would be, for example, -2.
+			// We need to set cY to 0, then shrink the height. To shrink the
+			// height (5), we add height to cY: 5 + (-2) = 3.
+			// This gives us 3 for the new height, and cY would be 0.
+			height = height + cY
+			cY = 0
+		}
 	}
 
 	i.Complete.SetRect(cX, cY, width, height)
