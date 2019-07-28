@@ -4,8 +4,6 @@ go 1.12
 
 replace github.com/go-interpreter/wagon => github.com/perlin-network/wagon v0.3.1-0.20180825141017-f8cb99b55a39
 
-replace github.com/diamondburned/tview/v2 => ../../tview
-
 require (
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/chzyer/logex v1.1.10 // indirect
@@ -14,7 +12,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dghubble/trie v0.0.0-20190512033633-6d8e3fa705df
 	github.com/diamondburned/tcell v1.1.8
-	github.com/diamondburned/tview/v2 v2.2.4
+	github.com/diamondburned/tview/v2 v2.3.0
 	github.com/fasthttp/websocket v1.4.0
 	github.com/gogo/protobuf v1.2.1
 	github.com/golang/protobuf v1.3.1 // indirect

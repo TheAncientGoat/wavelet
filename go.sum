@@ -25,6 +25,7 @@ github.com/diamondburned/tview/v2 v2.2.3 h1:vMLbDQnBHJeaq22TKZ+oe1FBhfrRWa9Uc3P1
 github.com/diamondburned/tview/v2 v2.2.3/go.mod h1:mKajR/o2doTYE1GHLVZH1EuUJHQmBWWjiKj4UwG3HLY=
 github.com/diamondburned/tview/v2 v2.2.4 h1:uJqO6/2Z5L7q5G7wd+kZW2/jE/UfnEQ+KeN6pHaIv9w=
 github.com/diamondburned/tview/v2 v2.2.4/go.mod h1:mKajR/o2doTYE1GHLVZH1EuUJHQmBWWjiKj4UwG3HLY=
+github.com/diamondburned/tview/v2 v2.3.0/go.mod h1:mKajR/o2doTYE1GHLVZH1EuUJHQmBWWjiKj4UwG3HLY=
 github.com/fasthttp/websocket v1.4.0 h1:hWw+gsVLA82cQFDF/vzydHjOedj1Oo00T/uKk+J5kcs=
 github.com/fasthttp/websocket v1.4.0/go.mod h1:4nypHRMj3oQPKA3/LllCXx0F0L5VyVKlMgo3lgbbwBM=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=
