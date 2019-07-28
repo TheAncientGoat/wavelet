@@ -4,6 +4,8 @@ go 1.12
 
 replace github.com/go-interpreter/wagon => github.com/perlin-network/wagon v0.3.1-0.20180825141017-f8cb99b55a39
 
+replace github.com/diamondburned/tview/v2 => ../../tview
+
 require (
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/chzyer/logex v1.1.10 // indirect
