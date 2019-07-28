@@ -9,7 +9,7 @@ import (
 
 	"github.com/perlin-network/noise/edwards25519"
 	"github.com/perlin-network/noise/skademlia"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/logger"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/logger"
 	"github.com/perlin-network/wavelet/sys"
 )
 
@@ -45,8 +45,9 @@ func (s *Server) readKeys(wallet string) (*skademlia.Keypair, error) {
 	}
 
 	if os.IsNotExist(err) {
-		// If a private key is specified instead of a path to a wallet, then simply use the provided private key instead.
-		if len(wallet) == hex.EncodedLen(edwards25519.SizePrivateKey) {
+		// If a private key is specified instead of a path to a wallet, then
+		// simply use the provided private key instead.
+		if wallet != "" {
 			var privateKey edwards25519.PrivateKey
 
 			n, err := hex.Decode(privateKey[:], []byte(wallet))
@@ -80,7 +81,7 @@ func (s *Server) readKeys(wallet string) (*skademlia.Keypair, error) {
 		privateKey := keys.PrivateKey()
 		publicKey := keys.PublicKey()
 
-		s.logger.Level(logger.WithSuccess("Existing wallet not found: generated a new one.").
+		s.logger.Level(logger.WithSuccess("Existing wallet not found, generated a new one.").
 			F("privatekey", "%x", privateKey).
 			F("publickey", "%x", publicKey))
 

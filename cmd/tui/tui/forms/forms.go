@@ -5,8 +5,9 @@ import (
 
 	"github.com/diamondburned/tcell"
 	"github.com/diamondburned/tview/v2"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/center"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/errdialog"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/center"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/errdialog"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/inputcomplete"
 )
 
 var (
@@ -66,23 +67,19 @@ func (f *Form) Add(pairs ...Pair) {
 	f.pairs = append(f.pairs, pairs...)
 
 	for _, pair := range pairs {
-		field := f.AddInputField(
-			pair.Name, pair.Default, f.FieldWidth,
-			pair.Validator, nil,
-		)
-
+		field := inputcomplete.New()
+		field.SetLabel(pair.Name)
+		field.SetText(pair.Default)
+		field.SetFieldWidth(f.FieldWidth)
+		field.SetAcceptanceFunc(pair.Validator)
 		field.SetFieldWidth(f.Width)
 
 		if pair.Completer != nil {
-			field.SetAutocompleteFunc(pair.Completer)
-
-			ac := field.Autocomplete()
-			if ac != nil {
-				ac.SetBackgroundColor(tcell.ColorWhite)
-				ac.SetSelectedBackgroundColor(tcell.ColorGrey)
-				ac.SetMainTextColor(tcell.ColorGrey)
-				ac.SetSelectedTextColor(tcell.ColorWhite)
-			}
+			field.Completer = pair.Completer
+			field.Complete.SetBackgroundColor(tcell.ColorWhite)
+			field.Complete.SetSelectedBackgroundColor(tcell.ColorGrey)
+			field.Complete.SetMainTextColor(tcell.ColorGrey)
+			field.Complete.SetSelectedTextColor(tcell.ColorWhite)
 		}
 	}
 }

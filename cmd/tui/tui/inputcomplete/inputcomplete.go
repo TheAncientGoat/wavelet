@@ -157,6 +157,10 @@ func (i *Input) SetChangedFunc(f func(string)) {
 	i.ChangeFunc = f
 }
 
+func (i *Input) SetCompleter(f Completer) {
+	i.Completer = f
+}
+
 func (i *Input) setCompletes(cs []Completion) {
 	i.completeMutex.Lock()
 	i.completes = cs

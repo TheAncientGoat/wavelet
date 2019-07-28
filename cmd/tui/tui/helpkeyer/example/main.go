@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/diamondburned/tview/v2"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/helpkeyer"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/helpkeyer"
 )
 
 func main() {

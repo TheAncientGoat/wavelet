@@ -6,16 +6,18 @@ import (
 	"strings"
 
 	"github.com/perlin-network/wavelet"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/forms"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/forms"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/inputcomplete"
 )
 
-func srvCompletion(text string) [][2]string {
-	completions := make([][2]string, 0, len(srv.History.Store))
+func srvCompletion(text string) []inputcomplete.Completion {
+	completions := make([]inputcomplete.Completion, 0, len(srv.History.Store))
 
 	for _, e := range srv.History.Store {
 		if text == "" || strings.Contains(e.ID, text) {
-			completions = append(completions, [2]string{
-				e.ID, e.String(),
+			completions = append(completions, inputcomplete.Completion{
+				Visual:  e.String(),
+				Replace: e.ID,
 			})
 		}
 	}

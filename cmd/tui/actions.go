@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/perlin-network/wavelet"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/errdialog"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/filechooser"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/forms"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/errdialog"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/filechooser"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/forms"
 )
 
 // this file (ab)uses global states from main.go

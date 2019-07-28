@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/diamondburned/tview/v2"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/errdialog"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/errdialog"
 )
 
 func main() {

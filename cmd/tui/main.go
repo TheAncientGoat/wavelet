@@ -9,14 +9,14 @@ import (
 	"github.com/diamondburned/tcell"
 	"github.com/diamondburned/tview/v2"
 	"github.com/perlin-network/wavelet"
-	"github.com/perlin-network/wavelet/cmd/cli/server"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/forms"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/helpkeyer"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/logger"
+	"github.com/perlin-network/wavelet/cmd/tui/server"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/forms"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/helpkeyer"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/logger"
 	"github.com/perlin-network/wavelet/sys"
 	flag "github.com/spf13/pflag"
 
-	_ "github.com/perlin-network/wavelet/cmd/cli/tui/clearbg"
+	_ "github.com/perlin-network/wavelet/cmd/tui/tui/clearbg"
 )
 
 var log *logger.Logger
@@ -55,8 +55,9 @@ func main() {
 		"Start a local API HTTP server at this port.")
 	flag.StringVar(&cfg.Wallet, "wallet", "config/wallet.txt",
 		"Path to file containing hex-encoded private key. If "+
-			"the path specified is invalid, or no file exists at the "+
-			"specified path, a random wallet will be generated. "+
+			"the path specified is invalid, no file exists at the "+
+			"specified path, or the string given is not a proper "+
+			"hex-encoded private key, a random wallet will be generated. "+
 			"Optionally, a 128-length hex-encoded private key to a "+
 			"wallet may also be specified.")
 	flag.StringVar(&cfg.Genesis, "genesis", "",

@@ -17,7 +17,7 @@ import (
 	"github.com/perlin-network/noise/skademlia"
 	"github.com/perlin-network/wavelet"
 	"github.com/perlin-network/wavelet/api"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/logger"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/logger"
 	"github.com/perlin-network/wavelet/internal/snappy"
 	"github.com/perlin-network/wavelet/store"
 	"github.com/perlin-network/wavelet/sys"

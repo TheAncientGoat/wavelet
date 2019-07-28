@@ -6,7 +6,7 @@ import (
 	"unicode"
 
 	"github.com/diamondburned/tview/v2"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/forms"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/forms"
 )
 
 func main() {

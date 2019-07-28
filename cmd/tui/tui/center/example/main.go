@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/diamondburned/tview/v2"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/center"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/center"
 )
 
 func main() {

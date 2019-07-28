@@ -6,8 +6,8 @@ import (
 
 	"github.com/diamondburned/tcell"
 	"github.com/diamondburned/tview/v2"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/clearbg"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/inputcomplete"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/clearbg"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/inputcomplete"
 )
 
 var dict = []string{

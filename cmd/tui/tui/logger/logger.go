@@ -44,7 +44,7 @@ func NewLogger() *Logger {
 		case key == tcell.KeyLeft, key == tcell.KeyRight,
 			char == "h", char == "l":
 
-			i, _ := l.list.GetCurrentItem()
+			i := l.list.GetCurrentItem()
 			c := l.list.GetItemCount()
 
 			// Left/H to scroll back, right/L to scroll forth
@@ -120,7 +120,7 @@ func (l *Logger) Level(lvl Level) *Logger {
 	l.list.AddItem(m, "          "+s, 0, nil)
 
 	// Get the information to estimate scroll
-	i, _ := l.list.GetCurrentItem()
+	i := l.list.GetCurrentItem()
 	c := l.list.GetItemCount()
 
 	if i > c-3 && l.activeLvl == nil || !l.focus {

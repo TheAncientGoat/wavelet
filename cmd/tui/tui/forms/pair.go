@@ -1,6 +1,10 @@
 package forms
 
-import "strconv"
+import (
+	"strconv"
+
+	"github.com/perlin-network/wavelet/cmd/tui/tui/inputcomplete"
+)
 
 // Setter is the function called when the user submits the form. This function
 // should set the fields of the structs, doing type conversion if needed.
@@ -20,7 +24,7 @@ type Pair struct {
 	// If false, invalid
 	Validator Validator
 
-	Completer Completer
+	Completer inputcomplete.Completer
 }
 
 // NewPair creates a new Pair

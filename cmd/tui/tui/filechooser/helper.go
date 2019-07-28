@@ -2,7 +2,7 @@ package filechooser
 
 import (
 	"github.com/diamondburned/tview/v2"
-	"github.com/perlin-network/wavelet/cmd/cli/tui/errdialog"
+	"github.com/perlin-network/wavelet/cmd/tui/tui/errdialog"
 )
 
 // Spawn opens a file chooser and blocks until the user chooses a file, then
