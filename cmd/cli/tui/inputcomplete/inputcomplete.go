@@ -32,6 +32,9 @@ type Input struct {
 
 	completes     []Completion
 	completeMutex sync.RWMutex
+
+	// the index to draw the completer with X offset
+	completerIndex int
 }
 
 func New() *Input {
@@ -49,85 +52,10 @@ func New() *Input {
 	i.Complete.SetSelectedBackgroundColor(tcell.Color248)
 	i.Complete.SetHighlightFullLine(true)
 	i.Complete.ShowSecondaryText(false)
-	i.Complete.SetInputCapture(func(ev *tcell.EventKey) *tcell.EventKey {
-		defer tview.Draw()
-
-		switch k, r := ev.Key(), ev.Rune(); {
-		case k == tcell.KeyEsc:
-			i.setCompletes(nil)
-			tview.SetFocus(i.InputField)
-			return nil
-
-		case k == tcell.KeyDown, r == 'j':
-			c, _ := i.Complete.GetCurrentItem()
-			if c == i.Complete.GetItemCount()-1 {
-				tview.SetFocus(i.InputField)
-				return nil
-			}
-		case k == tcell.KeyUp, r == 'k':
-			c, _ := i.Complete.GetCurrentItem()
-			if c == 0 {
-				tview.SetFocus(i.InputField)
-				return nil
-			}
-		}
-
-		return ev
-	})
-	i.Complete.SetSelectedFunc(func(_ int, _, to string, _ rune) {
-		text := i.InputField.GetText()
-		if i.CompletionSpace {
-			to += " "
-		}
-
-		/* Overthinking lol
-		pos := i.InputField.CursorPos
-
-		var from = 0
-		for i := pos - 1; i > 0; i-- {
-			if text[i] == ' ' {
-				from = i + 1
-				break
-			}
-		}
-
-		text = text[:from] + to + text[pos:]
-		i.InputField.SetText(text)
-		*/
-
-		// Get the text without the replaced part
-		f := strings.Split(text, " ")
-		text = strings.Join(f[:len(f)-1], " ")
-		if len(f) > 1 {
-			text += " "
-		}
-
-		// Set the text and set the focus
-		i.InputField.SetText(text + to)
-		tview.SetFocus(i.InputField)
-
-		// Clear the list after selection
-		i.setCompletes(nil)
-	})
 
 	i.InputField.SetBackgroundColor(-1)
 	i.InputField.SetFieldTextColor(-1)
-	i.InputField.SetInputCapture(func(ev *tcell.EventKey) *tcell.EventKey {
-		switch ev.Key() {
-		// TODO: Instead of focusing, try handling keys into the Complete List
-		// while still keeping focus onto the InputField
-		case tcell.KeyDown:
-			i.Complete.SetCurrentItem(0)
-			//tview.SetFocus(i.Complete)
-			return nil
-		case tcell.KeyUp:
-			i.Complete.SetCurrentItem(i.Complete.GetItemCount() - 1)
-			//tview.SetFocus(i.Complete)
-			return nil
-		}
-
-		return ev
-	})
+	i.InputField.SetInputCapture(i.inputBinds)
 	i.InputField.SetChangedFunc(func(text string) {
 		if i.ChangeFunc != nil {
 			i.ChangeFunc(text)
@@ -148,6 +76,11 @@ func New() *Input {
 			// would be joined using space above.
 			f := strings.Split(text, " ")
 			text = f[len(f)-1]
+
+			i.completerIndex = len(strings.Join(f[:len(f)-1], " "))
+			if len(f) > 1 {
+				i.completerIndex++
+			}
 		}
 
 		completes := i.Completer(text)
@@ -178,8 +111,28 @@ func (i *Input) Draw(s tcell.Screen) {
 
 	i.Complete.SetItems(items)
 
+	if i.Complete.GetCurrentItem() < 0 {
+		i.Complete.SetCurrentItem(0)
+	}
+
 	x, y, w, h := i.GetRect()
-	i.Complete.SetRect(x, y+1, w, min(len(i.completes), min(i.MaxFields, h)))
+
+	// The positions for the autocompleter
+	var cX, cY = x + i.completerIndex, y + 1
+
+	// Calculate the height for the autocompleter
+	height := min(len(items), min(i.MaxFields, h))
+	width := w - i.completerIndex
+
+	//panic(fmt.Sprint("bruh", height, len(items) + 1, i.MaxFields, h))
+
+	// If the drop-down completer goes out of screen
+	if cY+height > y+h {
+		// Just drop up lol
+		cY = y - height
+	}
+
+	i.Complete.SetRect(cX, cY, width, height)
 
 	i.InputField.Draw(s)
 	i.Complete.Draw(s)

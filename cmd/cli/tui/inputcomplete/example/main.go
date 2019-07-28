@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/diamondburned/tcell"
@@ -14,16 +15,21 @@ var dict = []string{
 	"seis", "siete", "ocho", "nueve", "diez",
 }
 
+var eng = []string{
+	"one", "two", "three", "four", "five",
+	"six", "seven", "eight", "nine", "ten",
+}
+
 func main() {
 	clearbg.Enable()
 
 	i := inputcomplete.New()
 	i.Completer = func(word string) []inputcomplete.Completion {
 		cs := make([]inputcomplete.Completion, 0, len(dict))
-		for _, d := range dict {
+		for i, d := range dict {
 			if strings.HasPrefix(d, word) {
 				cs = append(cs, inputcomplete.Completion{
-					Visual:  "[white]" + d + "[-]",
+					Visual:  fmt.Sprintf("[white]%-7s [%s[][-]", d, eng[i]),
 					Replace: d,
 				})
 			}
@@ -39,8 +45,8 @@ func main() {
 
 	f := tview.NewFlex()
 	f.SetDirection(tview.FlexRow)
-	f.AddItem(i, 1, 1, true)
 	f.AddItem(tv, 0, 1, false)
+	f.AddItem(i, 1, 1, true)
 
 	tview.Initialize()
 	tview.SetRoot(f, true)
