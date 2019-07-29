@@ -141,6 +141,11 @@ func NewLedger(kv store.KV, client *skademlia.Client, genesis *string) *Ledger {
 	return ledger
 }
 
+// GetMetrics returns the internal metrics.
+func (l *Ledger) GetMetrics() *Metrics {
+	return l.metrics
+}
+
 // AddTransaction adds a transaction to the ledger. If the transaction has
 // never been added in the ledgers graph before, it is pushed to the gossip
 // mechanism to then be gossiped to this nodes peers. If the transaction is

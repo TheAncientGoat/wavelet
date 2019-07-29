@@ -13,6 +13,7 @@ import (
 	"github.com/perlin-network/wavelet/cmd/tui/tui/forms"
 	"github.com/perlin-network/wavelet/cmd/tui/tui/helpkeyer"
 	"github.com/perlin-network/wavelet/cmd/tui/tui/logger"
+	wlog "github.com/perlin-network/wavelet/log"
 	"github.com/perlin-network/wavelet/sys"
 	flag "github.com/spf13/pflag"
 
@@ -157,6 +158,8 @@ func configUI() tview.Primitive {
 */
 
 func mainUI() tview.Primitive {
+	wlog.SetWriter(wlog.LoggerWavelet, log)
+
 	s, err := server.New(*cfg, log)
 	if err != nil {
 		fatal("Failed to start server", err)
@@ -187,6 +190,8 @@ func mainUI() tview.Primitive {
 		pub := s.Keys.PublicKey()
 		key := hex.EncodeToString(pub[:])
 
+		node := wlog.Node()
+
 		// 15 redraws/sec == 15fps minimum
 		for range time.NewTicker(time.Second / 15).C {
 			snap := s.Ledger.Snapshot()
@@ -195,6 +200,9 @@ func mainUI() tview.Primitive {
 			stat.SetText(fmt.Sprintf(
 				"⣿ wavelet: %s - %d PERLs", key[:8], bal,
 			))
+
+			node.Info().Msg("Test.")
+			node.Error().Int("luck", 0).Msg("Error.")
 
 			tview.Draw()
 		}

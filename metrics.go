@@ -21,15 +21,17 @@ package wavelet
 
 import (
 	"context"
+	"time"
+
 	"github.com/perlin-network/wavelet/log"
 	"github.com/rcrowley/go-metrics"
-	"time"
 )
 
 type Metrics struct {
-	registry metrics.Registry
+	Latest CurrentMetrics
 
-	queried metrics.Meter
+	registry metrics.Registry
+	queried  metrics.Meter
 
 	gossipedTX   metrics.Meter
 	receivedTX   metrics.Meter
@@ -37,6 +39,28 @@ type Metrics struct {
 	downloadedTX metrics.Meter
 
 	queryLatency metrics.Timer
+}
+
+type CurrentMetrics struct {
+	RoundQueried int64
+
+	TX  TPSMetrics
+	RPS TPSMetrics
+
+	QueryLatency struct {
+		// ms
+		Max int64
+		Min int64
+	}
+
+	Timestamp time.Time
+}
+
+type TPSMetrics struct {
+	Gossipsed  int64
+	Received   int64
+	Accepted   int64
+	Downloaded int64
 }
 
 func NewMetrics(ctx context.Context) *Metrics {
@@ -50,6 +74,16 @@ func NewMetrics(ctx context.Context) *Metrics {
 	downloadedTX := metrics.NewRegisteredMeter("tx.downloaded", registry)
 
 	queryLatency := metrics.NewRegisteredTimer("query.latency", registry)
+
+	m := &Metrics{
+		registry:     registry,
+		queried:      queried,
+		gossipedTX:   gossipedTX,
+		receivedTX:   receivedTX,
+		acceptedTX:   acceptedTX,
+		downloadedTX: downloadedTX,
+		queryLatency: queryLatency,
+	}
 
 	go func() {
 		logger := log.Metrics()
@@ -78,18 +112,7 @@ func NewMetrics(ctx context.Context) *Metrics {
 		}
 	}()
 
-	return &Metrics{
-		registry: registry,
-
-		queried: queried,
-
-		gossipedTX:   gossipedTX,
-		receivedTX:   receivedTX,
-		acceptedTX:   acceptedTX,
-		downloadedTX: downloadedTX,
-
-		queryLatency: queryLatency,
-	}
+	return m
 }
 
 func (m *Metrics) Stop() {

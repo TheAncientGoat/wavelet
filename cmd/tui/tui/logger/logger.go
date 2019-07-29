@@ -1,6 +1,9 @@
 package logger
 
 import (
+	"encoding/json"
+	"errors"
+
 	"github.com/diamondburned/tcell"
 	"github.com/diamondburned/tview/v2"
 )
@@ -135,6 +138,43 @@ func (l *Logger) Level(lvl Level) *Logger {
 	return l
 }
 
+var (
+	ErrJSONMissingLevel   = errors.New("Missing .level")
+	ErrJSONMissingMessage = errors.New("Missing .message")
+)
+
+func (l *Logger) Write(p []byte) (int, error) {
+	var m map[string]interface{}
+	if err := json.Unmarshal(p, &m); err != nil {
+		return 0, err
+	}
+
+	lvl, ok := m["level"].(string)
+	if !ok {
+		return 0, ErrJSONMissingLevel
+	}
+
+	msg, ok := m["message"].(string)
+	if !ok {
+		return 0, ErrJSONMissingMessage
+	}
+
+	switch lvl {
+	case "debug":
+		i := WithInfo(msg)
+		l.Level()
+	case "info":
+	case "warn":
+	case "error":
+	case "fatal":
+	case "panic":
+	default:
+	}
+
+	l.Level(WithInfo("Received").F("json", string(p)))
+	return len(p), nil
+}
+
 func (l *Logger) callLevel(i int, m, s string, r rune) {
 	l.activeLvl = l.lvls[i]
 
@@ -151,3 +191,5 @@ func (l *Logger) getPrimitive() tview.Primitive {
 
 	return l.tv
 }
+
+func (l *Logger) 
