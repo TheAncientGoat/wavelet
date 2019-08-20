@@ -25,6 +25,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"io"
 	"math"
 
 	"github.com/pkg/errors"
@@ -359,8 +360,11 @@ func (n *node) getString() string {
 	}
 }
 
-func (n *node) serializeForDifference(buf *bytebufferpool.ByteBuffer) {
+func (n *node) serializeForDifference(wr io.Writer) error {
 	var buf64 [8]byte
+
+	buf := bytebufferpool.Get()
+	defer bytebufferpool.Put(buf)
 
 	buf.Write(n.id[:])
 	binary.LittleEndian.PutUint64(buf64[:], n.viewID)
@@ -387,6 +391,9 @@ func (n *node) serializeForDifference(buf *bytebufferpool.ByteBuffer) {
 		buf.Write(n.left[:])
 		buf.Write(n.right[:])
 	}
+
+	_, err := buf.WriteTo(wr)
+	return err
 }
 
 func (n *node) dfs(t *Tree, allowMissingNodes bool, cb func(*node) (bool, error)) error {
