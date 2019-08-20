@@ -1218,9 +1218,9 @@ type collapseResults struct {
 }
 
 type CollapseState struct {
-	once    sync.Once
+	mu      sync.Mutex
+	done    bool
 	results *collapseResults
-	err     error
 }
 
 // collapseTransactions takes all transactions recorded within a graph depth interval, and applies
@@ -1255,11 +1255,22 @@ func (l *Ledger) collapseTransactions(round uint64, start, end Transaction, logg
 	_collapseState, _ := l.cacheCollapse.LoadOrPut(end.ID, &CollapseState{})
 	collapseState := _collapseState.(*CollapseState)
 
-	collapseState.once.Do(func() {
-		collapseState.results, collapseState.err = collapseTransactions(l.graph, l.accounts, round, l.Rounds().Latest(), start, end, logging)
-	})
+	var results *collapseResults
+	var err error
 
-	return collapseState.results, collapseState.err
+	collapseState.mu.Lock()
+	if collapseState.done {
+		results = collapseState.results
+	} else {
+		results, err = collapseTransactions(l.graph, l.accounts, round, l.Rounds().Latest(), start, end, logging)
+		if err == nil {
+			collapseState.results = results
+			collapseState.done = true
+		}
+	}
+	collapseState.mu.Unlock()
+
+	return results, err
 }
 
 // LogChanges logs all changes made to an AVL tree state snapshot for the purposes
